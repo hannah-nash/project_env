@@ -12,22 +12,29 @@ client = Client(account_sid, auth_token)
 
 @app.route("/sms", methods=['GET', 'POST'])
 def sms_reply():
-    """Respond to incoming calls with a simple text message."""
-    resp = MessagingResponse()
-
-    resp.message("Hi Josh")
-
-    return str(resp)
-
+    # check if the message is incoming or outgoing
+    if request.method == 'POST':
+        # get the message body
+        message_body = request.form['Body']
+        
+        # check if the message is a number
+        try:
+            amount = int(message_body)
+        except ValueError:
+            resp = MessagingResponse()
+            resp.message("Please send a valid number.")
+            return str(resp)
+        
+        # convert the number to words and cents
+        dollars = num2words(amount // 100)
+        cents = amount % 100
+        resp = MessagingResponse()
+        resp.message(f"${dollars} and {cents:02d}/100")
+        return str(resp)
+    else:
+        # this is a GET request, so return a message prompting the user to text the number
+        return "Please text the amount in cents (e.g., 1234 for $12.34)."
 if __name__ == "__main__":
     app.run(debug=True)
-
-#message = client.messages \
-                #.create(
-                    #body="Hi Hannah",
-                    #from_=twilio_phone_number,
-                    #to='+14258024796'
-                #)
-#print(message.sid)
 
 
