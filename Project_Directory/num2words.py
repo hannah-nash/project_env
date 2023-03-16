@@ -12,7 +12,6 @@ def num2words(num):
     num_groups = (len(num_str) + 2) // 3
     num_str = num_str.zfill(num_groups * 3)
     groups = [int(num_str[i:i+3]) for i in range(0, len(num_str), 3)][::-1]
-    
     # convert each group to words
     words = []
     for i, group in enumerate(groups):
@@ -36,4 +35,6 @@ def num2words(num):
             words.append(thousands[i])
     
     return ' '.join(words)
+
+
 
